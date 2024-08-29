@@ -75,7 +75,7 @@ model VerificationToken {
 
 model Habit {
     id        Int      @id @default(autoincrement())
-    content   String
+    badHabit  String
+    goodHabit String
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }

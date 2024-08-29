@@ -18,7 +18,7 @@ export default async function Home() {
         <HabitForm />
         <ul>
           {habits.map((habit) => (
-            <li key={habit.id} className="py-2 px-3 border-b">
+            <li key={habit.id} className="border-b px-3 py-2">
               {habit.content}
             </li>
           ))}

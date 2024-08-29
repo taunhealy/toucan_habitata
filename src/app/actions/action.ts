@@ -2,7 +2,8 @@ import { db } from "@/server/db";
 import { z } from "zod";
 
 const habitSchema = z.object({
-  content: z.string().min(1, "Habit content is required"),
+  badHabit: z.string().min(1, "Bad habit is required"),
+  goodHabit: z.string().min(1, "Good habit is required"),
 });
 
 export const createHabit = async (formData: FormData) => {
@@ -11,7 +12,8 @@ export const createHabit = async (formData: FormData) => {
 
   await db.habit.create({
     data: {
-      content: parsedData.content,
+      badHabit: parsedData.badHabit,
+      goodHabit: parsedData.goodHabit,
       createdAt: new Date(),
     },
   });
