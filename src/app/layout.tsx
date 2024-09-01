@@ -17,6 +17,8 @@ export default function RootLayout({
   return (
     // Removed <html> and added React fragment
     <>
+
+    
       <html>
         <body>
           <div className={`min-w-[350px] ${inter.className}`}>
