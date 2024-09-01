@@ -1,69 +1,37 @@
 import { z } from "zod";
-import { jobTypes, locationTypes } from "./job-types";
 
-const requiredString = z.string().min(1,"Required");
-const numericRequiredString = requiredString.regex(/^\d+$/, "Must be a number");
+const requiredString = z.string().trim().min(1, "Required");
 
-const companyLogoSchema = z
-  .custom<File | undefined>()
-  .refine(
-    (file) => !file || (file instanceof File && file.type.startsWith("image/")),
-    "Must be an image file",
-  )
-  .refine((file) => {
-    return !file || file.size < 1024 * 1024 * 2;
-  }, "File must be less than 2MB");
-
-const applicationSchema = z
-  .object({
-    applicationEmail: z.string().max(100).email().optional().or(z.literal("")),
-    applicationUrl: z.string().max(100).url().optional().or(z.literal("")),
-  })
-  .refine((data) => data.applicationEmail || data.applicationUrl, {
-    message: "Email or url is required",
-    path: ["applicationEmail"],
-  });
-
-const locationSchema = z
-  .object({
-    locationType: requiredString.refine(
-      (value) => locationTypes.includes(value),
-      "Invalid location type",
-    ),
-    location: z.string().max(100).optional(),
-  })
-  .refine(
-    (data) =>
-      !data.locationType || data.locationType === "Remote" || data.location,
-    {
-      message: "Location is required for on-site jobs",
-      path: ["location"],
-    },
-  );
-
-export const createJobScheme = z.object({
-  title: requiredString.max(100),
-  type: requiredString.refine(
-    (value) => jobTypes.includes(value),
-    "Invalid job type",
+export const signUpSchema = z.object({
+  email: requiredString.email("Invalid email address"),
+  username: requiredString.regex(
+    /^[a-zA-Z0-9_-]+$/,
+    "Only letters, numbers, - and _ allowed",
   ),
-  companyName: requiredString.max(100),
-  companyLogo: companyLogoSchema,
-  description: z.string().max(5000).optional(),
-  salary: numericRequiredString.max(
-    9,
-    "Number can't be longer than 9 digits",
-  ),
-})
-.and(applicationSchema)
-.and(locationSchema);
-
-export type CreateJobValues = z.infer<typeof createJobScheme>;
-export const jobFilterSchema = z.object({
-  q: z.string().optional(),
-  type: z.string().optional(),
-  location: z.string().optional(),
-  remote: z.coerce.boolean().optional(),
+  password: requiredString.min(8, "Must be at least 8 characters"),
 });
 
-export type JobFilterValues = z.infer<typeof jobFilterSchema>;
+export type SignUpValues = z.infer<typeof signUpSchema>;
+
+export const loginSchema = z.object({
+  username: requiredString,
+  password: requiredString,
+});
+
+export type LoginValues = z.infer<typeof loginSchema>;
+
+export const createPostSchema = z.object({
+  content: requiredString,
+  mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
+});
+
+export const updateUserProfileSchema = z.object({
+  displayName: requiredString,
+  bio: z.string().max(1000, "Must be at most 1000 characters"),
+});
+
+export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;
+
+export const createCommentSchema = z.object({
+  content: requiredString,
+});

@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import SigninButton from "./SignInButton";
 
 export default function Navbar() {
   return (
@@ -9,9 +9,12 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-3">
           <span className="text-xl font-bold tracking-tight">Habitata</span>
         </Link>
-        <Button asChild>
-          <Link href="/jobs/new">Post a job</Link>
-        </Button>
+        <div className="flex gap-4">
+          <Button variant="outline" asChild></Button>
+          <Button asChild>
+            <Link href="/start-journey">Start A Journey</Link>
+          </Button>
+        </div>
       </nav>
     </header>
   );
